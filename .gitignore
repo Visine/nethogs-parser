@@ -28,3 +28,4 @@ config
 out*
 *.prof
 nethogsbw
+nethogs-parser

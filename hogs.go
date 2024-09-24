@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"flag"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -52,7 +52,7 @@ func check(err error) {
 	}
 }
 
-//flags
+// flags
 var (
 	datatable      string
 	datatableclass string
@@ -140,7 +140,11 @@ func (d DATA) parseline(line string) {
 	}
 	ud, err := user.LookupId(processdata[len(processdata)-1])
 	if err != nil {
-		ud = &user.User{"-1", "-1", "dontknow", "dontknow", "/home/dontknow"}
+		ud = &user.User{Uid: "-1",
+			Gid:      "-1",
+			Username: "dontknow",
+			Name:     "dontknow",
+			HomeDir:  "/home/dontknow"}
 	}
 	data[pname] = pt{
 		data[pname].sent + sent,
@@ -188,7 +192,7 @@ func send_to_datatable(collection []DATA) {
 	resp, err := http.PostForm(datatable+"/api/put", params)
 	check(err)
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	check(err)
 	fmt.Println(string(body))
 }
